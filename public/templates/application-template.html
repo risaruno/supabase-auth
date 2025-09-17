@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>기일입찰표</title>
+    <style>
+
+      @font-face {
+        /* This is the name you will use in your CSS */
+        font-family: 'Sinmyeonjo';
+
+        /* This is the path to the font file */
+        src: url('/fonts/Sinmyeonjo.ttf') format('truetype');
+
+        /* Optional: Define font weight and style if you have multiple files */
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        font-family: 'Sinmyeonjo', serif;
+        color: #000;
+        margin: 0;
+        padding: 20px;
+      }
+
+      @media print {
+        body {
+          background-color: white;
+          padding: 0;
+        }
+
+        .document-a4 {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+        }
+      }
+
+      .document-a4 {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 24mm;
+        margin: 0;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        line-height: 1.4;
+        font-size: 12pt;
+      }
+
+      .document-a4 * {
+        font-size: 14px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 10pt;
+      }
+
+      .form-number {
+        text-align: left;
+      }
+
+      .paper-size {
+        text-align: right;
+      }
+
+      .main-title {
+        text-align: center;
+        font-size: 18pt;
+        font-weight: 600;
+        letter-spacing: 3px;
+      }
+
+      .main-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 3mm 0;
+        font-size: 9pt;
+      }
+
+      .main-table th,
+      .main-table td {
+        border: 1px solid #000;
+        text-align: center;
+        vertical-align: middle;
+        height: 32px;
+      }
+
+      .main-table th {
+        background-color: #f8f8f8;
+        font-weight: 600;
+      }
+
+      .menu-header {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+      }
+
+      .menu-header-row {
+        width: 60%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .price-header {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      .price-header span {
+        font-size: 12px !important;
+      }
+
+      .price-col {
+        width: 3%;
+      }
+
+      .price-col-header {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+      }
+
+      .price-col-header span {
+        font-size: 12px !important;
+      }
+
+      .price-col-input > td {
+        border: 2px solid #000;
+      }
+
+      .price-footer {
+        font-size: 12px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+      }
+
+      .mark-anchor {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .mark-text {
+        position: absolute;
+        width: 8px;
+        height: 60px;
+        margin-left: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        overflow: visible;
+      }
+
+      .mark {
+        position: absolute;
+        width: 7px;
+        height: 16px;
+        margin: 2px 0;
+        background-color: #000;
+      }
+
+      .mark.mup {
+        top: 0;
+      }
+
+      .mark.mdown {
+        bottom: -12px;
+      }
+
+      .mark.mright {
+        right: -3px;
+      }
+
+      .mark.mleft {
+        left: -3px;
+      }
+
+      .mark.mleft-center {
+        left: -5px;
+      }
+
+      .guarantee-method {
+        font-size: 14px;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: 100%;
+      }
+      
+      .guarantee-text {
+        flex: 2;
+        text-align: left;
+      }
+
+      .guarantee-options {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .guarantee-sign {
+        font-size: 14px;
+        width: fit-content;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 4px;
+      }
+
+      .security-section {
+        margin: 5mm 0;
+        font-size: 9pt;
+      }
+
+      .checkbox {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 1.5px solid #000;
+        margin-right: 5px;
+        vertical-align: middle;
+        line-height: 12px;
+      }
+
+      .notes-section {
+        margin-top: 2mm;
+        line-height: 1.3;
+      }
+
+      .notes-section * {
+        font-size: 10pt !important;
+      }
+
+      .notes-section h4 {
+        margin: 1mm 0;
+        font-weight: 600;
+      }
+
+      .notes-section ol {
+        margin: 0;
+        padding-left: 15px;
+      }
+
+      .notes-section li {
+        margin: 0;
+      }
+
+      .field {
+        width: 15px;
+        display: inline-block;
+        text-align: center;
+        padding: 1px 3px;
+        margin: 0 2px;
+      }
+
+      .large-field {
+        min-width: 80px;
+      }
+
+      .small-field {
+        min-width: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="document-a4">
+      <div class="header">
+        <div class="form-number">[전산양식 A3360] 기일입찰표(최석)</div>
+        <div class="paper-size">용지규격 210mm×297mm(A4용지)</div>
+      </div>
+
+      <div class="main-title"></div>
+
+      <table class="main-table">
+        <tr>
+          <td colspan="30" style="text-align: center; padding: 5px">
+            <div
+              class="caption-front"
+              style="font-size: 14px; color: gray; float: left"
+            >
+              (앞면)
+            </div>
+            <div
+              class="title"
+              style="
+                font-size: 24px;
+                font-weight: bold;
+                margin: 20px;
+                letter-spacing: 14px;
+              "
+            >
+              기일입찰표
+            </div>
+            <div
+              class="context"
+              style="
+                font-size: 14px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <div class="left">
+                지방법원&nbsp;&nbsp;&nbsp;&nbsp;집행관&nbsp;&nbsp;&nbsp;&nbsp;귀하
+              </div>
+              <div class="right" style="margin-right: 10px">
+                <span> 입찰기일 : </span>
+                <span class="field" style="width: 25px;">{{biddingYear}}</span> 년
+                <span class="field">{{biddingMonth}}</span> 월
+                <span class="field">{{biddingDay}}</span> 일
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" style="padding: 0;">
+            <div class="menu-header" style="flex-direction: column;">
+              <span>사&nbsp;건</span>
+              <span>번&nbsp;호</span>
+            </div>
+          </td>
+          <td colspan="13" style="padding: 0;">
+            <div style="display: inline-block;">
+              {{caseYear}}&nbsp;&nbsp;&nbsp;타경&nbsp;&nbsp;&nbsp;{{caseNumber}}&nbsp;&nbsp;&nbsp;번호</td>
+            </div>
+          <td colspan="3" style="padding: 0;">
+            <div class="menu-header" style="flex-direction: column;">
+              <span>물&nbsp;건</span>
+              <span>번&nbsp;호</span>
+            </div>
+          </td>
+          <td colspan="10" style="padding: 0;">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+                justify-content: center;
+              "
+            >
+              <span style="margin-left: 20px">{{itemNumber}}</span>
+              <span
+                style="vertical-align: middle; font-size: 7pt; text-align: left"
+              >
+                ※물건번호가 여러개 있는 경우에는<br />&nbsp;&nbsp;&nbsp;꼭 기재
+              </span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan="6" colspan="2">
+            <div class="menu-header" style="flex-direction: column; justify-content: center; gap: 20px;">
+              <span>입</span>
+              <span>찰</span>
+              <span>자</span>
+            </div>
+          </td>
+          <td rowspan="3" colspan="3" style="padding: 0;">
+            <div class="menu-header">
+              <span>본인</span>
+            </div>
+          </td>
+          <td colspan="5" style="height: 30px;">
+            <div class="menu-header" style="padding: 0;">
+              <div class="menu-header-row">
+                <span>성</span>
+                <span>명</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="10" style="text-align: center; padding: 0;">{{bidderName}}</td>
+          <td colspan="4">
+            <div class="menu-header" style="flex-direction: column;">
+              <span>전화번호</span>
+            </div>
+          </td>
+          <td colspan="6" style="padding: 0;">{{bidderPhone}}</td>
+        </tr>
+        <tr>
+          <td colspan="5" style="padding: 0;">
+            <div class="menu-header">
+              <span>주민(사업자)</span>
+              <span>등록번호</span>
+            </div>
+          </td>
+          <td colspan="6" style="text-align: center; padding: 0;">{{bidderId}}</td>
+          <td colspan="4" style="padding: 0;">
+            <div class="menu-header">
+              <span>&nbsp;법인등록&nbsp;</span>
+              <div class="menu-header-row">
+                <span>번</span>
+                <span>호</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="10" style="text-align: center; padding: 0;">
+            {{corporateRegistrationNumber}}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5" style="padding: 0;">
+            <div class="menu-header">
+              <div class="menu-header-row">
+                <span>주</span>
+                <span>소</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="20" style="text-align: center; padding: 0;">{{bidderAddress}}</td>
+        </tr>
+        <tr>
+          <td rowspan="3" colspan="3" style="vertical-align: middle; padding: 0;">대리인</td>
+          <td colspan="5" style="padding: 0;">
+            <div class="menu-header">
+              <div class="menu-header-row">
+                <span>성</span>
+                <span>명</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="10" style="text-align: center; padding: 0;">{{agentName}}</td>
+          <td colspan="4" style="padding: 0;">
+            <div class="menu-header">
+              <span>&nbsp;본인과의&nbsp;</span>
+              <div class="menu-header-row">
+                <span>관</span>
+                <span>계</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="6" style="padding: 0;">{{relationshipWithBidder}}</td>
+        </tr>
+        <tr>
+          <td colspan="5" style="padding: 0;">
+            <div class="menu-header">
+              <span>&nbsp;주민등록&nbsp;</span>
+              <div class="menu-header-row">
+                <span>번</span>
+                <span>호</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="10" style="text-align: center; padding: 0;">{{agentId}}</td>
+          <td colspan="4">
+            <div class="menu-header" style="flex-direction: column; padding: 0;">
+              <span>전화번호</span>
+            </div>
+          </td>
+          <td colspan="6" style="text-align: center; padding: 0;">{{agentPhone}}</td>
+        </tr>
+        <tr>
+          <td colspan="5" style="padding: 0;">
+            <div class="menu-header">
+              <div class="menu-header-row">
+                <span>주</span>
+                <span>소</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="20" style="text-align: left; padding-left: 5px; padding: 0;">
+            {{agentAddress}}
+          </td>
+        </tr>
+        <tr class="price-row">
+          <td rowspan="2" colspan="2" style="vertical-align: middle; width: 7%">
+            <div class="price-header">
+              <span>입찰</span>
+              <span>가격</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>천</span><span>억</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>백</span><span>억</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>십</span><span>억</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>억</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>천</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>백</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>십</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>천</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>백</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>십</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>일</span>
+            </div>
+          </td>
+          <td rowspan="2" style="vertical-align: middle">
+            <div class="price-footer">
+              <span>원</span>
+            </div>
+          </td>
+          <td rowspan="2" colspan="2" style="vertical-align: middle; width: 7%">
+            <div class="price-header">
+              <span>보증</span>
+              <span>금액</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>백</span><span>억</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>십</span><span>억</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>억</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>천</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>백</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header"><span>십</span><span>만</span></div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>만</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>천</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>백</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>십</span>
+            </div>
+          </td>
+          <td class="price-col">
+            <div class="price-col-header">
+              <span>일</span>
+            </div>
+          </td>
+          <td rowspan="2" colspan="2" style="vertical-align: middle; width: 5%">
+            <div class="price-footer">
+              <span>원</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="price-col-input" style="height: 60px">
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_100B}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_10B}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_1B}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_100M}}</div>
+              <div class="mark mup mleft"></div>
+              <div class="mark mdown mleft"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_10M}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_1M}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_100K}}</div>
+              <div class="mark mup mleft"></div>
+              <div class="mark mdown mleft"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_10K}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_1K}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_100}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_10}}</div>
+              <div class="mark mup mleft-center"></div>
+              <div class="mark mdown mleft-center"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{bidPrice_1}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_10B}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_1B}}</div>
+              <div class="mark mup mright"></div>
+              <div class="mark mdown mright"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_100M}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_10M}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_1M}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_100K}}</div>
+              <div class="mark mup mleft-center"></div>
+              <div class="mark mdown mleft-center"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_10K}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_1K}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_100}}</div>
+              <div class="mark mup mleft"></div>
+              <div class="mark mdown mleft"></div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_10}}</div>
+            </div>
+          </td>
+          <td>
+            <div class="mark-anchor">
+              <div class="mark-text">{{guaranteeAmount_1}}</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="guarantee-row" style="height: 20mm">
+          <td colspan="15" style="width: 50%; padding: 8px">
+            <div class="guarantee-method">
+              <div class="guarantee-text">보증의<br />제공방법</div>
+              <div class="guarantee-options">
+                <div>
+                  <span class="checkbox">{{cashCheck}}</span> 현금‧자기앞수표
+                </div>
+                <div>
+                  <span class="checkbox">{{guaranteeCheck}}</span> 보증서
+                </div>
+              </div>
+            </div>
+          </td>
+          <td colspan="15" style="width: 50%; padding: 8px">
+            <div class="guarantee-sign">
+              <span>보증을 반환 받았습니다. </span>
+              <span>입찰자 </span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="notes-section">
+        <h4>주의사항.</h4>
+        <ol>
+          <li>
+            입찰표는 물건마다 별도의 용지를 사용하십시오, 다만, 일괄입찰시에는
+            1매의 용지를 사용하십시오.
+          </li>
+          <li>
+            한 사건에서 입찰물건이 여러개 있고 그 물건들이 개별적으로 입찰에
+            부쳐진 경우에는 사건번호외에 물건번호를 기재하십시오.
+          </li>
+          <li>
+            입찰자가 법인인 경우에는 본인의 성명란에 법인의 명칭과 대표자의 지위
+            및 성명을, 주민등록란에는 입찰자가 개인인 경우에는 주민등록번호를,
+            법인인 경우에는 사업자등록번호를 기재하고, 대표자의 자격을 증명하는
+            서면(법인의 등기부 등․초본)을 제출하여야 합니다.
+          </li>
+          <li>
+            주소는 주민등록상의 주소를, 법인은 등기부상의 본점소재지를
+            기재하시고, 신분확인상 필요하오니 주민등록증을 꼭 지참하십시오.
+          </li>
+          <li style="font-weight: bold; text-decoration: underline">
+            입찰가격은 수정할 수 없으므로, 수정을 요하는 때에는 새 용지를
+            사용하십시오.
+          </li>
+          <li>
+            대리인이 입찰하는 때에는 입찰자란에 본인과 대리인의 인적사항 및
+            본인과의 관계 등을 모두 기재하는 외에 본인의 위임장(입찰표 뒷면을
+            사용)과 인감증명을 제출하십시오.
+          </li>
+          <li>위임장, 인감증명 및 자격증명서는 이 입찰표에 첨부하십시오.</li>
+          <li>일단 제출된 입찰표는 취소, 변경이나 교환이 불가능합니다.</li>
+          <li>
+            공동으로 입찰하는 경우에는 공동입찰신고서를 입찰표와 함께 제출하되,
+            입찰표의 본인란에는"별첨 공동입찰자목록 기재와 같음"이라고 기재한
+            다음, 입찰표와 공동입찰신고서 사이에는 공동입찰자 전원이 간인
+            하십시오.
+          </li>
+          <li>입찰자 본인 또는 대리인 누구나 보증을 반환 받을 수 있습니다.</li>
+          <li>
+            보증의 제공방법(현금 자기앞수표 또는 보증서)중 하나를 선택하여 ☑표를
+            기재하십시오.
+          </li>
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>

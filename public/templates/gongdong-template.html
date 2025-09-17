@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동입찰자목록</title>
+    <style>
+        /* Import a serif font for a professional document feel */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap');
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            font-family: 'Noto Serif KR', serif;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .document-a4 {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                max-height: 100vh;
+            }
+        }
+
+        .document-a4 {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: 0;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            line-height: 1.4;
+            font-size: 11pt;
+        }
+
+        .header {
+            text-align: left;
+            font-size: 9pt;
+            margin-bottom: 8mm;
+        }
+
+        .case-info {
+            text-align: right;
+            margin-bottom: 8mm;
+            font-size: 10pt;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 18pt;
+            font-weight: 600;
+            margin: 12mm 0;
+            letter-spacing: 3px;
+        }
+
+        .table-container {
+            margin: 8mm 0;
+        }
+
+        .bidder-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5mm 0;
+            font-size: 12pt;
+            page-break-inside: avoid;
+        }
+
+        .bidder-table th, .bidder-table td {
+            border: 1px solid #000;
+            padding: 3px;
+            text-align: center;
+            vertical-align: middle;
+            height: 20px;
+        }
+
+        .bidder-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .bidder-table .number-col {
+            width: 8%;
+        }
+
+        .bidder-table .name-col {
+            width: 15%;
+        }
+
+        .bidder-table .address-header {
+            width: 67%;
+        }
+
+        .bidder-table .address-sub {
+            width: 32.5%;
+            font-size: 12pt;
+        }
+
+        .bidder-table .share-col {
+            width: 10%;
+        }
+
+        .bidder-table .address-cell {
+            text-align: left;
+            padding-left: 6px;
+            font-size: 12pt;
+        }
+
+        .bidder-table .id-cell {
+            font-size: 12pt;
+        }
+
+        .bidder-table .phone-cell {
+            font-size: 12pt;
+        }
+
+        .body-content p {
+            margin: 10mm 0;
+            line-height: 2;
+        }
+        .body-content p {
+            margin: 10mm 0;
+            line-height: 2;
+        }
+
+        .submission-date {
+            text-align: center;
+            margin: 15mm 0;
+        }
+
+        .recipient {
+            font-size: 14pt;
+            font-weight: 600;
+            text-align: center;
+            margin: 15mm 0;
+        }
+
+        .applicant-info {
+            margin-top: 15mm;
+            text-align: right;
+        }
+
+        .footer-notes {
+            margin-top: 25mm;
+            font-size: 10pt;
+            line-height: 1.8;
+        }
+        
+        /* Styles for the placeholder spans to look like input fields */
+        .placeholder {
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding: 0 5px;
+            font-weight: 600;
+        }
+
+        .signature-section {
+            margin-top: 20mm;
+            text-align: right;
+        }
+
+        .stamp-area {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ccc;
+            margin-left: 20px;
+            vertical-align: middle;
+        }
+
+        .total-count {
+            text-align: center;
+            margin: 10mm 0;
+            font-weight: 600;
+        }
+
+        .paper-size {
+            position: fixed;
+            text-align: center;
+            bottom: 10mm;
+            right: 10mm;
+            font-size: 8pt;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-a4">
+        <div class="header">
+            <p>[전산양식 A3365]</p>
+        </div>
+
+        <div class="case-info">
+            <p>
+                사건번호&nbsp;&nbsp;
+                <span class="placeholder">{{caseYear}}</span>&nbsp;타경&nbsp;
+                <span class="placeholder">{{caseNumber}}</span>&nbsp;호&nbsp;
+            </p>
+            <p>
+                물건번호&nbsp;&nbsp;
+                <span class="placeholder">{{itemNumber}}</span>
+            </p>
+        </div>
+
+        <h1 class="main-title">공동입찰자목록</h1>
+
+        <div class="table-container">
+            <table class="bidder-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="number-col">번호</th>
+                        <th rowspan="2" class="name-col">성명</th>
+                        <th colspan="2" class="address-header">주소</th>
+                        <th rowspan="2" class="share-col">지분</th>
+                    </tr>
+                    <tr>
+                        <th class="address-sub">주민등록번호</th>
+                        <th class="address-sub">전화번호</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2">{{bidder1Number}}</td>
+                        <td rowspan="2">{{bidder1Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder1Address}}</td>
+                        <td rowspan="2">{{bidder1Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder1Id}}</td>
+                        <td class="phone-cell">{{bidder1Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder2Number}}</td>
+                        <td rowspan="2">{{bidder2Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder2Address}}</td>
+                        <td rowspan="2">{{bidder2Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder2Id}}</td>
+                        <td class="phone-cell">{{bidder2Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder3Number}}</td>
+                        <td rowspan="2">{{bidder3Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder3Address}}</td>
+                        <td rowspan="2">{{bidder3Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder3Id}}</td>
+                        <td class="phone-cell">{{bidder3Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder4Number}}</td>
+                        <td rowspan="2">{{bidder4Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder4Address}}</td>
+                        <td rowspan="2">{{bidder4Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder4Id}}</td>
+                        <td class="phone-cell">{{bidder4Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder5Number}}</td>
+                        <td rowspan="2">{{bidder5Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder5Address}}</td>
+                        <td rowspan="2">{{bidder5Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder5Id}}</td>
+                        <td class="phone-cell">{{bidder5Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder6Number}}</td>
+                        <td rowspan="2">{{bidder6Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder6Address}}</td>
+                        <td rowspan="2">{{bidder6Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder6Id}}</td>
+                        <td class="phone-cell">{{bidder6Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder7Number}}</td>
+                        <td rowspan="2">{{bidder7Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder7Address}}</td>
+                        <td rowspan="2">{{bidder7Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder7Id}}</td>
+                        <td class="phone-cell">{{bidder7Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder8Number}}</td>
+                        <td rowspan="2">{{bidder8Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder8Address}}</td>
+                        <td rowspan="2">{{bidder8Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder8Id}}</td>
+                        <td class="phone-cell">{{bidder8Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder9Number}}</td>
+                        <td rowspan="2">{{bidder9Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder9Address}}</td>
+                        <td rowspan="2">{{bidder9Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder9Id}}</td>
+                        <td class="phone-cell">{{bidder9Phone}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">{{bidder10Number}}</td>
+                        <td rowspan="2">{{bidder10Name}}<br>(인)</td>
+                        <td colspan="2" class="address-cell">{{bidder10Address}}</td>
+                        <td rowspan="2">{{bidder10Share}}</td>
+                    </tr>
+                    <tr>
+                        <td class="id-cell">{{bidder10Id}}</td>
+                        <td class="phone-cell">{{bidder10Phone}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="paper-size">
+            <p>용지규격 210mm×297mm(A4 용지)</p>
+        </div>
+    </div>
+</body>
+</html>

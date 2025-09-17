@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동입찰신고서</title>
+    <style>
+        /* Import a serif font for a professional document feel */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap');
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            font-family: 'Noto Serif KR', serif;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .document-a4 {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                max-height: 100vh;
+            }
+        }
+
+        .document-a4 {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 30mm;
+            margin: 0;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            line-height: 1.6;
+            font-size: 11pt;
+        }
+
+        .header {
+            text-align: left;
+            font-size: 9pt;
+            margin-bottom: 10mm;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 20pt;
+            font-weight: 600;
+            margin: 20mm 0;
+            letter-spacing: 4px;
+        }
+
+        .recipient-section {
+            text-align: right;
+            margin: 18mm 0;
+            font-size: 13pt;
+        }
+
+        .content-section {
+            margin: 18mm 0;
+            line-height: 2;
+        }
+
+        .content-row {
+            margin: 2mm 0;
+            align-items: center;
+            text-align: left;
+        }
+
+        .label {
+            display: inline-block;
+            min-width: 90px;
+            margin-right: 15px;
+        }
+
+        .field {
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            margin: 0 2px;
+        }
+
+        .case-info {
+            margin: 12mm 0;
+        }
+
+        .statement {
+            text-align: center;
+            margin: 10mm 0;
+            line-height: 1;
+        }
+
+        .date-section {
+            text-align: center;
+            margin: 18mm 0;
+            font-size: 11pt;
+        }
+
+        .applicant-section {
+            text-align: right;
+            margin: 18mm 0;
+            line-height: 1.8;
+        }
+
+        .notes-section {
+            margin-top: 20mm;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+
+        .notes-section p {
+            margin: 3mm 0;
+        }
+
+        .paper-size {
+          position: fixed;
+            bottom: 10mm;
+            right: 10mm;
+            font-size: 8pt;
+            color: #666;
+        }
+
+        .underlined {
+            text-decoration: underline;
+            text-decoration-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-a4">
+        <div class="header">
+            <p>[전산양식 A3364]</p>
+        </div>
+
+        <div class="main-title">
+            공동입찰신고서
+        </div>
+
+        <div class="recipient-section">
+            <p>법원 집행관&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;귀하</p>
+        </div>
+
+        <div class="content-section">
+            <div class="case-info">
+                <div class="content-row">
+                    <span class="label">사건번호</span>
+                    <span class="field">{{caseYear}}</span>
+                    <span>&nbsp;타경&nbsp;</span>
+                    <span class="field">{{caseNumber}}</span>
+                    <span>&nbsp;호</span>
+                </div>
+                
+                <div class="content-row">
+                    <span class="label">물건번호</span>
+                    <span class="field">{{itemNumber}}</span>
+                </div>
+                
+                <div class="content-row">
+                    <span class="label">공동입찰자</span>
+                    <span>&nbsp;&nbsp;별지 목록과 같음</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="statement">
+            <p>위 사건에 관하여 <span class="underlined">공동입찰을</span> 신고합니다.</p>
+        </div>
+
+        <div class="date-section">
+            <p>
+                <span class="field">{{submissionYear}}</span>&nbsp;&nbsp;년&nbsp;&nbsp;
+                <span class="field">{{submissionMonth}}</span>&nbsp;&nbsp;월&nbsp;&nbsp;
+                <span class="field">{{submissionDay}}</span>&nbsp;&nbsp;일
+            </p>
+        </div>
+
+        <div class="applicant-section">
+            <p>신청인&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="field">{{mainApplicantName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;외&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="field">{{additionalApplicantsCount}}</span>&nbsp;&nbsp;&nbsp;&nbsp;인
+            </p>
+            <p>(별지목록 기재와 같음)</p>
+        </div>
+
+        <div class="notes-section">
+            <p><strong>※ 1.</strong> 공동입찰을 하는 때에는 <span class="underlined">입찰표에 각자의 지분을 분명하게 표시</span>하여야 합니다.</p>
+            <p><strong>※ 2.</strong> 별지 공동입찰자 목록과 사이에 <span class="underlined">공동입찰자 전원이 간인</span>하십시오.</p>
+        </div>
+
+        <div class="paper-size">
+            <p>용지규격 210mm×297mm(A4 용지)</p>
+        </div>
+    </div>
+</body>
+</html>
