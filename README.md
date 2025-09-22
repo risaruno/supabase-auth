@@ -1,200 +1,244 @@
-# Supabase Auth with JWT - Next.js Example
+# Korean Authentication System - JavaScript Implementation
 
-This is a comprehensive authentication example built with Next.js, Supabase, and JWT tokens featuring session timeout functionality.
+This project provides a complete JavaScript implementation of the Korean KISA SEED CBC encryption library and authentication system, converted from the original PHP version. It includes a web-based interface for testing Korean identity verification services (통합본인인증).
 
 ## Features
 
-- **🔐 Supabase Authentication**: Email/password authentication with Supabase
-- **🎫 JWT Token Management**: Custom JWT tokens generated after successful authentication
-- **⏰ Session Timeout**: Configurable session timeout with automatic logout
-- **🔄 Real-time Timer**: Visual countdown showing remaining session time
-- **🛡️ Protected API Routes**: Middleware-protected API endpoints
-- **📱 Responsive UI**: Modern, responsive design with Tailwind CSS
-- **🔒 Auto-logout**: Automatic logout when session expires
-
-## Tech Stack
-
-- **Frontend**: Next.js 15 (App Router), React, TypeScript
-- **Styling**: Tailwind CSS
-- **Authentication**: Supabase Auth
-- **Tokens**: JSON Web Tokens (JWT)
-- **Deployment**: Vercel (recommended)
-
-## Setup Instructions
-
-### 1. Clone and Install Dependencies
-
-```bash
-git clone <your-repo-url>
-cd auth_test
-npm install
-```
-
-### 2. Supabase Setup
-
-1. Create a new project at [Supabase](https://supabase.com)
-2. Go to Settings > API to get your keys
-3. Copy your project URL and keys
-
-### 3. Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-
-# JWT Configuration
-JWT_SECRET=your_jwt_secret_key_here
-
-# Session timeout (in milliseconds) - 30 minutes default
-SESSION_TIMEOUT=1800000
-```
-
-### 4. Run the Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+- **KISA SEED CBC Encryption**: Full JavaScript implementation of the Korean standard encryption algorithm
+- **Authentication Flow**: Complete integration with Inicis authentication services
+- **Web Interface**: Modern React/TypeScript-based authentication form
+- **Real-time Hash Generation**: Automatic SHA256 hash generation for authentication
+- **SEED Decryption**: Support for decrypting personal information received from authentication services
+- **User Verification**: Built-in user validation against session/database information
 
 ## Project Structure
 
 ```
-src/
-├── app/
-│   ├── api/
-│   │   ├── protected/          # Protected API routes
-│   │   └── verify-token/       # JWT verification endpoint
-│   ├── layout.tsx              # Root layout with AuthProvider
-│   └── page.tsx               # Main page
-├── components/
-│   ├── Dashboard.tsx          # User dashboard
-│   ├── LoginForm.tsx          # Authentication form
-│   └── ProtectedApiTest.tsx   # API testing component
-├── contexts/
-│   └── AuthContext.tsx        # Authentication context
-└── lib/
-    ├── jwt.ts                 # JWT utilities
-    └── supabase.ts            # Supabase client
+auth-test/
+├── src/
+│   ├── app/
+│   │   └── auth/
+│   │       └── page.tsx          # Main authentication page (React/TypeScript)
+│   └── lib/
+│       ├── kisa-seed-cbc.js      # KISA SEED CBC encryption library
+│       └── ini-lib.js            # INI authentication utilities
+├── public/
+│   ├── lib/                      # JavaScript libraries for browser use
+│   │   ├── kisa-seed-cbc.js
+│   │   └── ini-lib.js
+│   └── success.html              # Authentication result page
+└── README.md
 ```
 
-## How It Works
+## Installation
 
-### Authentication Flow
+1. **Clone or navigate to the project directory**:
+   ```bash
+   cd /Users/rsn/Documents/git/auth-test
+   ```
 
-1. **User Registration/Login**: Users can sign up or sign in using email/password
-2. **Supabase Authentication**: Supabase handles the authentication process
-3. **JWT Generation**: Upon successful auth, a custom JWT token is generated
-4. **Session Management**: The app tracks session time and automatically logs out users
-5. **Protected Routes**: API routes are protected using JWT middleware
+2. **Install dependencies** (for Next.js development):
+   ```bash
+   npm install
+   ```
 
-### Session Timeout
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-- Default timeout: 30 minutes (configurable via `SESSION_TIMEOUT`)
-- Real-time countdown displayed to users
-- Automatic logout when session expires
-- Warning notifications when session is about to expire
+4. **Access the application**:
+   - Main authentication page: `http://localhost:3000/auth`
+   - Standalone HTML version: `http://localhost:3000/success.html`
 
-### JWT Token Features
+## Usage
 
-- Contains user ID and email
-- Configurable expiration time
-- Used for API authentication
-- Stored in localStorage with automatic cleanup
+### Basic Authentication Flow
 
-## API Endpoints
+1. **Open the authentication page** at `/auth`
+2. **Fill in the form fields**:
+   - MID: Your merchant ID (default: INIiasTest for testing)
+   - 요청구분코드: Service type ("01" for simple auth, "02" for digital signature)
+   - 사용자 정보: Name, phone, birth date for fixed user authentication
+3. **Generate hashes** by clicking "해시 생성"
+4. **Request authentication** by clicking "인증요청"
+5. **Complete authentication** in the popup window
+6. **View results** on the success page with decrypted personal information
 
-### Public Endpoints
-- `GET/POST /api/verify-token` - Verify JWT token validity
+### JavaScript Libraries
 
-### Protected Endpoints
-- `GET/POST /api/protected/user-data` - Example protected route
+#### KISA SEED CBC Library (`kisa-seed-cbc.js`)
 
-## Usage Examples
+```javascript
+// Basic encryption/decryption
+const encrypted = KISASeedCBC.seedCBCEncrypt(key, iv, data, 0, data.length);
+const decrypted = KISASeedCBC.seedCBCDecrypt(key, iv, encrypted, 0, encrypted.length);
 
-### Testing Protected APIs
-
-1. Sign in to get a JWT token
-2. Use the "Protected API Test" section in the dashboard
-3. Test GET and POST requests to protected endpoints
-4. View real-time API responses
-
-### Custom JWT Integration
-
-```typescript
-import { generateJWTToken, verifyJWTToken } from '@/lib/jwt'
-
-// Generate token
-const token = generateJWTToken(userId, email)
-
-// Verify token
-const payload = verifyJWTToken(token)
+// Utility functions
+const hash = await AuthUtils.sha256("your-string-to-hash");
+const bytes = AuthUtils.stringToByteArray("your-string");
+const base64 = AuthUtils.byteArrayToBase64(bytes);
 ```
 
-## Customization
+#### INI Library (`ini-lib.js`)
 
-### Changing Session Timeout
+```javascript
+// Generate authentication hashes
+const authHash = await INILib.generateAuthHash(mid, txId, apiKey);
+const userHash = await INILib.generateUserHash(name, mid, phone, txId, birth, svcCode);
 
-Update the `SESSION_TIMEOUT` environment variable (in milliseconds):
+// Decrypt SEED encrypted data
+const decrypted = await INILib.decryptSEED(encryptedData, seedKey, seedIV);
 
-```env
-SESSION_TIMEOUT=3600000  # 1 hour
-SESSION_TIMEOUT=900000   # 15 minutes
+// Validate Inicis URLs
+const isValid = INILib.isValidInicisUrl(url);
+
+// Create authentication popup
+const popup = INILib.createAuthPopup();
+
+// Submit authentication form
+INILib.submitAuthForm(formData, "https://sa.inicis.com/auth", "popup_target");
 ```
 
-### Adding More Protected Routes
+### Authentication Parameters
 
-1. Create routes under `/api/protected/`
-2. They'll automatically be protected by the middleware
-3. Access user info via headers: `x-user-id`, `x-user-email`
+#### Required Fields
+- **mid**: Merchant ID provided by Inicis
+- **reqSvcCd**: Request service code ("01" or "02")
+- **mTxId**: Unique transaction ID
+- **authHash**: SHA256 hash of mid + mTxId + apiKey
+- **successUrl**: URL for successful authentication callback
+- **failUrl**: URL for failed authentication callback
 
-## Deployment
+#### Optional Fields for Fixed User Authentication
+- **flgFixedUser**: Set to "Y" to enable fixed user mode
+- **userName**: User's name
+- **userPhone**: User's phone number
+- **userBirth**: User's birth date (YYYYMMDD)
+- **userHash**: SHA256 hash of user info + transaction details
 
-### Vercel (Recommended)
+## API Integration
 
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
+### Authentication Request Flow
 
-### Other Platforms
+1. **Generate required hashes**:
+   ```javascript
+   const authHash = await INILib.generateAuthHash(mid, mTxId, apiKey);
+   const userHash = await INILib.generateUserHash(userName, mid, userPhone, mTxId, userBirth, reqSvcCd);
+   ```
 
-Ensure your deployment platform supports:
-- Node.js runtime
-- Environment variables
-- API routes
+2. **Submit to Inicis authentication service**:
+   ```javascript
+   const formData = {
+       mid: 'your-mid',
+       reqSvcCd: '01',
+       mTxId: 'unique-transaction-id',
+       authHash: authHash,
+       // ... other fields
+   };
+   INILib.submitAuthForm(formData);
+   ```
+
+3. **Handle authentication response**:
+   ```javascript
+   // In success.html or your callback handler
+   const params = new URLSearchParams(window.location.search);
+   const authData = INILib.processAuthResponse(params);
+   
+   if (authData.resultCode === '0000') {
+       // Authentication successful
+       const token = authData.token;
+       // Proceed with user verification
+   }
+   ```
+
+### User Verification and Data Decryption
+
+```javascript
+// Decrypt personal information using SEED
+const decryptedName = await INILib.decryptSEED(encryptedName, token, seedIV);
+const decryptedPhone = await INILib.decryptSEED(encryptedPhone, token, seedIV);
+const decryptedBirth = await INILib.decryptSEED(encryptedBirth, token, seedIV);
+const decryptedCI = await INILib.decryptSEED(encryptedCI, token, seedIV);
+
+// Validate against session/database
+const sessionData = {
+    userName: 'expected-name',
+    userPhone: 'expected-phone',
+    userBirth: 'expected-birth',
+    userCi: 'expected-ci'
+};
+
+const validationResult = INILib.validateUser({
+    userName: decryptedName,
+    userPhone: decryptedPhone,
+    userBirthday: decryptedBirth,
+    userCi: decryptedCI
+}, sessionData);
+
+console.log(validationResult.isValid); // true/false
+console.log(validationResult.message); // Success/failure message
+```
 
 ## Security Considerations
 
-- JWT secrets should be cryptographically secure
-- Use HTTPS in production
-- Regularly rotate JWT secrets
-- Consider implementing refresh tokens for longer sessions
-- Validate and sanitize all user inputs
+1. **API Key Protection**: Store your API key securely and never expose it in client-side code in production
+2. **URL Validation**: Always validate that authentication URLs come from official Inicis domains
+3. **User Verification**: Compare decrypted personal information against your session/database data
+4. **Token Security**: Handle SEED decryption tokens securely and ensure they're not logged or exposed
+5. **HTTPS**: Always use HTTPS for authentication flows in production
 
-## Contributing
+## Configuration
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+### Test Environment
+- MID: `INIiasTest`
+- API Key: `TGdxb2l3enJDWFRTbTgvREU3MGYwUT09`
+- Authentication URL: `https://sa.inicis.com/auth`
 
-## License
+### Production Environment
+Replace test credentials with your production values:
+```javascript
+const config = {
+    mid: 'your-production-mid',
+    apiKey: 'your-production-api-key',
+    authUrl: 'https://kssa.inicis.com/auth' // or fcsa.inicis.com
+};
+```
 
-MIT License - feel free to use this project as a starting point for your applications.
+## Error Handling
+
+The system includes comprehensive error handling for:
+- Invalid form data
+- Hash generation failures
+- Popup blocking
+- Authentication service errors
+- SEED decryption failures
+- User validation failures
+
+Example error handling:
+```javascript
+try {
+    const authHash = await INILib.generateAuthHash(mid, mTxId, apiKey);
+} catch (error) {
+    console.error('Hash generation failed:', error);
+    // Handle error appropriately
+}
+```
+
+## Browser Compatibility
+
+- Modern browsers with ES6+ support
+- Crypto API support for SHA256 hashing
+- Popup window support (required for authentication flow)
+- JavaScript enabled
+
+## Development Notes
+
+- The SEED encryption implementation is a simplified version for demonstration
+- In production, you may need to complete the full SEED algorithm implementation
+- The current implementation includes mock data for testing purposes
+- Replace mock functions with actual API calls for production use
 
 ## Support
 
-For issues and questions:
-1. Check existing GitHub issues
-2. Create a new issue with detailed description
-3. Include steps to reproduce any bugs
-
----
-
-Built with ❤️ using Next.js and Supabase
+This implementation is based on the official KISA SEED algorithm and Inicis authentication service documentation. For production deployment, consult with your payment service provider for specific integration requirements.
